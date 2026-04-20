@@ -115,8 +115,29 @@
     font-size: 19px;
     line-height: 1.55;
     color: var(--ink-soft);
-    max-width: 560px;
+    max-width: 620px;
     margin: 0;
+  }
+  .word-flip {
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+    vertical-align: bottom;
+    height: 1.3em;
+    min-width: 2em;
+  }
+  .word-flip-inner {
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.45s cubic-bezier(.4,0,.2,1);
+  }
+  .word-flip-inner span {
+    display: block;
+    height: 1.3em;
+    line-height: 1.3em;
+    color: var(--accent);
+    font-style: italic;
+    white-space: nowrap;
   }
 
   /* decorative floating spec block, upper right */
@@ -157,68 +178,6 @@
     font-weight: 400;
     font-size: 20px;
     color: var(--ink);
-  }
-
-  /* ---------- team ---------- */
-  section.team { padding-bottom: 120px; }
-  .team-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 32px;
-  }
-  .person {
-    display: flex;
-    flex-direction: column;
-  }
-  .portrait {
-    aspect-ratio: 4 / 5;
-    border-radius: 2px;
-    background:
-      radial-gradient(120% 80% at 30% 20%, rgba(255,255,255,0.55), transparent 60%),
-      linear-gradient(180deg, #cfd8e8 0%, #9fb1cc 100%);
-    position: relative;
-    overflow: hidden;
-    margin-bottom: 16px;
-    box-shadow: 0 1px 0 rgba(10,26,47,0.06);
-  }
-  .portrait::before {
-    /* silhouette */
-    content: "";
-    position: absolute;
-    left: 50%;
-    bottom: -4%;
-    width: 62%;
-    aspect-ratio: 1 / 1;
-    transform: translateX(-50%);
-    background: linear-gradient(180deg, #4d6383 0%, #2a3d59 100%);
-    border-radius: 50% 50% 45% 45% / 55% 55% 40% 40%;
-  }
-  .portrait::after {
-    /* shoulders */
-    content: "";
-    position: absolute;
-    left: 50%;
-    bottom: -30%;
-    width: 130%;
-    aspect-ratio: 2 / 1;
-    transform: translateX(-50%);
-    background: linear-gradient(180deg, #2a3d59, #0a1a2f);
-    border-radius: 50% 50% 0 0;
-  }
-  .person .name {
-    font-family: 'Fraunces', serif;
-    font-size: 18px;
-    font-weight: 400;
-    color: var(--ink);
-    margin: 0 0 4px;
-    letter-spacing: -0.01em;
-  }
-  .person .role {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--muted);
   }
 
   /* ---------- newsletter ---------- */
@@ -377,7 +336,7 @@
 
   <nav>
     <div class="mark reveal d1"><span class="dot"></span>e&#8209;flex</div>
-    <div class="meta reveal d1">Palo Alto, CA · Est. 2024</div>
+    <div class="meta reveal d1">Palo Alto, CA · Est. 2026</div>
   </nav>
 
   <header class="hero">
@@ -388,52 +347,23 @@
     </div>
     <div class="eyebrow reveal d1">Industrial Energy Intelligence</div>
     <h1 class="reveal d2">
-      Physics-constrained<br/>
-      optimization for the <em>grid&#8209;edge</em>.
+      Industry's co-pilot<br/>
+      for the <em>energy&#8209;transition</em>.
     </h1>
     <p class="lede reveal d3">
-      e-flex turns industrial facilities into grid assets. We model complete plants — pumps, tanks,
-      membranes, electrolyzers — against real tariffs and production contracts, and solve planning
-      problems 10–100× faster than the consulting standard.
+      <span class="word-flip" id="flip1"><span class="word-flip-inner"></span></span>
+      your
+      <span class="word-flip" id="flip2"><span class="word-flip-inner"></span></span>
+      plant for volatility.
     </p>
   </header>
-
-  <section class="team">
-    <div class="section-head">
-      <span class="label">§ 01 — Team</span>
-      <span class="title">the people building it.</span>
-    </div>
-
-    <div class="team-grid">
-      <div class="person reveal d1">
-        <div class="portrait"></div>
-        <div class="name">First Last</div>
-        <div class="role">Co-founder · CEO</div>
-      </div>
-      <div class="person reveal d2">
-        <div class="portrait"></div>
-        <div class="name">First Last</div>
-        <div class="role">Co-founder · CTO</div>
-      </div>
-      <div class="person reveal d3">
-        <div class="portrait"></div>
-        <div class="name">First Last</div>
-        <div class="role">Research</div>
-      </div>
-      <div class="person reveal d4">
-        <div class="portrait"></div>
-        <div class="name">First Last</div>
-        <div class="role">Engineering</div>
-      </div>
-    </div>
-  </section>
 
   <section class="news">
     <div class="inner">
       <div>
         <div class="eyebrow">§ 02 — Newsletter</div>
         <h2>Occasional notes from the <em>lab</em>.</h2>
-        <p>Technical write-ups, pilot results, and releases. No more than once a month. Unsubscribe whenever.</p>
+        <p>Technical write-ups, pilot results, and releases. No more than once a quarter. Unsubscribe whenever.</p>
       </div>
 
       <form id="news-form" novalidate>
@@ -462,6 +392,53 @@
     if (!email || !email.includes('@')) return;
     form.classList.add('sent');
   });
+</script>
+<script>
+  (function() {
+    var words1 = ['Orchestrate', 'Design', 'Operate', 'Plan', 'Coordinate'];
+    var words2 = ['desalination', 'paper pulping', 'soda production', 'chemical manufacturing', 'electrolysis'];
+
+    function buildFlip(el, words) {
+      var inner = el.querySelector('.word-flip-inner');
+      // duplicate first word at end for seamless loop
+      var all = words.concat([words[0]]);
+      all.forEach(function(w) {
+        var s = document.createElement('span');
+        s.textContent = w;
+        inner.appendChild(s);
+      });
+      // size the container to widest word
+      var maxW = 0;
+      inner.querySelectorAll('span').forEach(function(s) {
+        if (s.offsetWidth > maxW) maxW = s.offsetWidth;
+      });
+      el.style.width = maxW + 'px';
+      return { inner: inner, total: words.length, current: 0 };
+    }
+
+    function advance(state, words, el) {
+      state.current++;
+      state.inner.style.transition = 'transform 0.45s cubic-bezier(.4,0,.2,1)';
+      state.inner.style.transform = 'translateY(-' + (state.current * 1.3) + 'em)';
+      if (state.current === words.length) {
+        setTimeout(function() {
+          state.inner.style.transition = 'none';
+          state.inner.style.transform = 'translateY(0)';
+          state.current = 0;
+        }, 460);
+      }
+    }
+
+    window.addEventListener('load', function() {
+      var el1 = document.getElementById('flip1');
+      var el2 = document.getElementById('flip2');
+      var s1 = buildFlip(el1, words1);
+      var s2 = buildFlip(el2, words2);
+
+      setInterval(function() { advance(s1, words1, el1); }, 2200);
+      setInterval(function() { advance(s2, words2, el2); }, 2200);
+    });
+  })();
 </script>
 </body>
 </html>
