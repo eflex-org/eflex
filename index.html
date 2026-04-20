@@ -123,13 +123,13 @@
     display: inline-block;
     position: relative;
     overflow: hidden;
-    vertical-align: bottom;
-    height: 1.3em;
+    vertical-align: middle;
+    height: 1.9em;
     min-width: 2em;
     background: #fff;
     border: 1px solid var(--rule);
-    border-radius: 3px;
-    padding: 0 6px;
+    border-radius: 4px;
+    padding: 0 8px;
     box-shadow: 0 1px 4px rgba(10,26,47,0.07);
   }
   .word-flip-inner {
@@ -138,9 +138,9 @@
     transition: transform 0.45s cubic-bezier(.4,0,.2,1);
   }
   .word-flip-inner span {
-    display: block;
-    height: 1.3em;
-    line-height: 1.3em;
+    display: flex;
+    align-items: center;
+    height: 1.9em;
     color: var(--accent);
     font-style: italic;
     white-space: nowrap;
@@ -399,23 +399,10 @@
     form.classList.add('sent');
   });
 </script>
-<script>
-  (function() {
-    var words1 = ['Orchestrate', 'Design', 'Operate', 'Plan', 'Site'];
-    var words2 = [
-      'desalination', 'chlor-alkali', 'green hydrogen', 'water treatment',
-      'caustic soda', 'brine electrolysis', 'aluminum smelting', 'zinc electrowinning',
-      'copper refining', 'lithium refining', 'semiconductor fabrication', 'wastewater treatment',
-      'biogas generation', 'carbon capture', 'paper pulping', 'textile dyeing',
-      'dairy processing', 'sugar refining', 'beer brewing', 'juice processing',
-      'seafood processing', 'starch processing', 'edible oil refining',
-      'pharmaceutical', 'chemical manufacturing', 'soda ash',
-      'sodium hypochlorite', 'oxygen generation', 'nitrogen generation', 'ozone generation',
-      'electroplating', 'fuel cell', 'electrolysis', 'hydrogen peroxide',
-      'seawater electrolysis', 'CO₂ electrolysis', 'iron ore processing'
-    ];
+<script type="module">
+  import { words1, words2 } from './words.js';
 
-    function buildFlip(el, words) {
+  function buildFlip(el, words) {
       var inner = el.querySelector('.word-flip-inner');
       // s0 = visible slot, s1 = staging slot below
       var s0 = document.createElement('span');
@@ -431,7 +418,7 @@
         if (s0.offsetWidth > maxW) maxW = s0.offsetWidth;
       });
       s0.textContent = words[0];
-      el.style.width = (maxW + 12) + 'px'; // 12 = 6px padding each side
+      el.style.width = (maxW + 16) + 'px'; // 16 = 8px padding each side
       return { inner: inner, words: words, current: 0, s0: s0, s1: s1 };
     }
 
@@ -447,7 +434,7 @@
       state.s1.textContent = state.words[nextIdx];
       // slide up to reveal s1
       state.inner.style.transition = 'transform 0.45s cubic-bezier(.4,0,.2,1)';
-      state.inner.style.transform = 'translateY(-1.3em)';
+      state.inner.style.transform = 'translateY(-1.9em)';
       setTimeout(function() {
         // snap: promote new word to s0, clear s1, reset position
         state.s0.textContent = state.words[nextIdx];
@@ -464,8 +451,7 @@
 
       setInterval(function() { advance(s1); }, 3200);
       setInterval(function() { advance(s2); }, 3200);
-    });
-  })();
+  });
 </script>
 </body>
 </html>
