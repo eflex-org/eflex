@@ -401,7 +401,7 @@
 </script>
 <script>
   (function() {
-    var words1 = ['Orchestrate', 'Design', 'Operate', 'Plan', 'Coordinate', 'Optimize', 'Site'];
+    var words1 = ['Orchestrate', 'Design', 'Operate', 'Plan', 'Site'];
     var words2 = [
       'desalination', 'chlor-alkali', 'green hydrogen', 'water treatment',
       'caustic soda', 'brine electrolysis', 'aluminum smelting', 'zinc electrowinning',
@@ -417,18 +417,22 @@
 
     function buildFlip(el, words) {
       var inner = el.querySelector('.word-flip-inner');
-      // two slots: current and next
-      for (var i = 0; i < 2; i++) {
-        var s = document.createElement('span');
-        s.textContent = words[i % words.length];
-        inner.appendChild(s);
-      }
+      // s0 = visible slot, s1 = staging slot below
+      var s0 = document.createElement('span');
+      var s1 = document.createElement('span');
+      s0.textContent = words[0];
+      s1.textContent = '';
+      inner.appendChild(s0);
+      inner.appendChild(s1);
+      // measure max width across every word
       var maxW = 0;
-      inner.querySelectorAll('span').forEach(function(s) {
-        if (s.offsetWidth > maxW) maxW = s.offsetWidth;
+      words.forEach(function(word) {
+        s0.textContent = word;
+        if (s0.offsetWidth > maxW) maxW = s0.offsetWidth;
       });
-      el.style.width = maxW + 'px';
-      return { inner: inner, words: words, current: 0, slots: inner.querySelectorAll('span') };
+      s0.textContent = words[0];
+      el.style.width = (maxW + 12) + 'px'; // 12 = 6px padding each side
+      return { inner: inner, words: words, current: 0, s0: s0, s1: s1 };
     }
 
     function pickNext(words, current) {
@@ -439,15 +443,15 @@
 
     function advance(state) {
       var nextIdx = pickNext(state.words, state.current);
-      var nextSlot = (state.current + 1) % 2;
-      // pre-load the next word into the off-screen slot
-      state.slots[nextSlot].textContent = state.words[nextIdx];
-      // animate down to it
+      // stage next word in s1 (off-screen below)
+      state.s1.textContent = state.words[nextIdx];
+      // slide up to reveal s1
       state.inner.style.transition = 'transform 0.45s cubic-bezier(.4,0,.2,1)';
       state.inner.style.transform = 'translateY(-1.3em)';
       setTimeout(function() {
-        // snap: put new word in slot 0, reset position
-        state.slots[0].textContent = state.words[nextIdx];
+        // snap: promote new word to s0, clear s1, reset position
+        state.s0.textContent = state.words[nextIdx];
+        state.s1.textContent = '';
         state.inner.style.transition = 'none';
         state.inner.style.transform = 'translateY(0)';
         state.current = nextIdx;
